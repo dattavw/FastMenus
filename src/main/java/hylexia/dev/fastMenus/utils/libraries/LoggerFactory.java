@@ -1,0 +1,67 @@
+package hylexia.dev.studio.utils.libraries;
+
+import hylexia.dev.studio.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+
+public class LoggerFactory {
+
+    public final Plugin plugin;
+    public static String prefix = "[...] ";
+
+    public LoggerFactory(Plugin plugin) {
+        this.plugin = plugin;
+
+        if (plugin != null) {
+            prefix = "[" + plugin.getName() + "] ";
+        }
+    }
+
+    public static void log(LogType type, String message) {
+        redirect(type, message);
+    }
+
+    public static void info(String message) {
+        LogType logType = LogType.INFO;
+        redirect(logType, message);
+    }
+
+    public static void warn(String message) {
+        LogType logType = LogType.WARNING;
+        redirect(logType, message);
+    }
+
+    public static void success(String message) {
+        LogType logType = LogType.SUCCESS;
+        redirect(logType, message);
+    }
+
+    public static void error(String message) {
+        LogType logType = LogType.ERROR;
+        redirect(logType, message);
+    }
+
+    public static void redirect(LogType type, String message) {
+        var ref = new Object() {
+            String fixedMessage = type.color + prefix + message;
+        };
+        ref.fixedMessage = Utils.colorize(ref.fixedMessage);
+
+        Bukkit.getConsoleSender().sendMessage(ref.fixedMessage);
+        Bukkit.getOnlinePlayers().stream().filter(player -> player.isOp() && player.getGameMode().isInvulnerable()).forEach(player -> player.sendMessage(ref.fixedMessage));
+    }
+
+
+    public enum LogType {
+        INFO("&7"),
+        WARNING("&6"),
+        SUCCESS("&a"),
+        ERROR("&c");
+
+        private final String color;
+
+        LogType(String color) {
+            this.color = color;
+        }
+    }
+}
