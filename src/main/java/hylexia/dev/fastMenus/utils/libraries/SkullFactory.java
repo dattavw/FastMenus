@@ -1,4 +1,4 @@
-package hylexia.dev.studio.utils.libraries;
+package hylexia.dev.fastMenus.utils.libraries;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import org.bukkit.Bukkit;

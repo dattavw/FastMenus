@@ -1,0 +1,19 @@
+config:
+  title: "&aMenu de ejemplo"
+  size: 9*5
+  filled: true
+
+items:
+  3,3: # x,y
+    material: RED_WOOL
+    display_name: "&aPRUEBA"
+    lore:
+      - "&7Este es un ejemplo de menú"
+      - "&7Puedes crear tus propios menús"
+    action:
+      any:
+        - "msg: hola %player% (?)"
+      right:
+        - "msg: que onda %player% (CLIC DERECHO)"
+      left:
+        - "msg: ¡hola %player% (CLIC IZQUIERDO)"

@@ -1,4 +1,4 @@
-package hylexia.dev.studio.utils.configuration;
+package hylexia.dev.fastMenus.utils.configuration;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -117,4 +117,7 @@ public class Configuration extends YamlConfiguration {
         return super.getInt(path, def);
     }
 
+    public boolean isEmpty() {
+        return getKeys(false).isEmpty();
+    }
 }

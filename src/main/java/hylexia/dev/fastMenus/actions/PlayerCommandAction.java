@@ -1,4 +1,19 @@
 package hylexia.dev.fastMenus.actions;
 
-public class PlayerAction {
+import hylexia.dev.fastMenus.objects.FastMenuAction;
+
+public class PlayerCommandAction extends FastMenuAction {
+    @Override
+    public String getFormat() {
+        return "player_cmd";
+    }
+
+    @Override
+    public void execute(String[] args) {
+        String command = join(args);
+
+        if (command.startsWith("/")) command = command.substring(1);
+
+        getOwner().performCommand(command);
+    }
 }

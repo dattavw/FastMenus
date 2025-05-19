@@ -1,16 +1,20 @@
 package hylexia.dev.fastMenus.utils;
 
+import hylexia.dev.fastMenus.FastMenus;
+import hylexia.dev.fastMenus.utils.libraries.TinyFactory;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Utils {
+public class ParseUtils {
 
     public static String colorize(String s) {
         return colorize(null, s);
@@ -95,7 +99,60 @@ public class Utils {
         };
     }
 
-    public static void sendMSG(@NotNull CommandSender commandSender, String s) {
-        commandSender.sendMessage(ParseUtils.processMSG(commandSender, s));
+    public static String processMSG(@NotNull CommandSender player, String text) {
+        return processMSG(player, List.of(text)).getFirst();
+    }
+
+    public static List<String> processMSG(@NotNull CommandSender player, String... text) {
+        return processMSG(player, text);
+    }
+
+    public static List<String> processMSG(@NotNull CommandSender commandSender, List<String> text) {
+        List<String> result = new ArrayList<>();
+
+        for (String msg : text) {
+            msg = msg.replace("[p]", FastMenus.getInstance().getPrefix());
+            msg = msg.replace("%player%", (commandSender != null ? commandSender.getName() : "<null>"));
+            msg = msg.replace("%online%", String.valueOf(Bukkit.getOnlinePlayers().size()));
+            msg = msg.replace("%dev%", FastMenus.getInstance().getTask().globalTick + "");
+            msg = parseTiny(msg);
+            msg = colorize(commandSender, msg);
+            result.add(msg);
+        }
+
+ /*       if (commandSender != null) {
+            commandSender.sendMessage("Parseando para " + commandSender.getName() + " - " + result);
+        }*/
+        return result;
+    }
+
+    public static String parseTiny(String text) {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder result = new StringBuilder();
+        boolean inTiny = false;
+        int length = text.length();
+
+        for (int i = 0; i < length; i++) {
+            char currentChar = text.charAt(i);
+
+            if (i + 5 < length && text.substring(i, i + 6).equals("[tiny]")) {
+                inTiny = true;
+                i += 5; // Skip "[tiny]"
+            } else if (i + 6 < length && text.substring(i, i + 7).equals("[/tiny]")) {
+                inTiny = false;
+                i += 6; // Skip "[/tiny]"
+            } else {
+                if (inTiny) {
+                    result.append(TinyFactory.generate(String.valueOf(currentChar)));
+                } else {
+                    result.append(currentChar);
+                }
+            }
+        }
+
+        return result.toString();
     }
 }

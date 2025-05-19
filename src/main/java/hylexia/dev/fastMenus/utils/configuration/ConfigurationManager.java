@@ -1,8 +1,9 @@
-package hylexia.dev.studio.utils.configuration;
+package hylexia.dev.fastMenus.utils.configuration;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.NonNull;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -16,8 +17,16 @@ public class ConfigurationManager {
     public ConfigurationManager(JavaPlugin plugin) {
         this.plugin = plugin;
         this.configCache = CacheBuilder.newBuilder()
-            .expireAfterAccess(30, TimeUnit.MINUTES)
-            .build();
+                .expireAfterAccess(30, TimeUnit.MINUTES)
+                .build();
+    }
+
+    public Configuration getConfig(File file) {
+        if (file == null || !file.exists()) {
+            return null;
+        }
+
+        return new Configuration(file);
     }
 
     public Configuration getConfig(@NonNull String path) {

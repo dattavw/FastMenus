@@ -1,0 +1,16 @@
+prefix: "&e&lFastMenus &8»&r"
+
+######################################################
+# Modo de Depuración:                               #
+# true = Ver depuración (permisos)                   #
+# false = No ver depuración                         #
+######################################################
+debug: true
+
+######################################################
+# Intervalo de Actualización:                         #
+# Frecuencia (ticks; 20 ticks = 1s).                #
+# 1 tick = Instantáneo.                              #
+# 20 ticks = 1 segundo.                             #
+######################################################
+update-interval: 20

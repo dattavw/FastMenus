@@ -2,18 +2,16 @@ package hylexia.dev.fastMenus.actions;
 
 import hylexia.dev.fastMenus.objects.FastMenuAction;
 
-public class PlayerCommandAction extends FastMenuAction {
+public class PlayerChatAction extends FastMenuAction {
     @Override
     public String getFormat() {
-        return "player_cmd";
+        return "player_chat";
     }
 
     @Override
     public void execute(String[] args) {
         String command = join(args);
 
-        if (command.startsWith("/")) command = command.substring(1);
-
-        getOwner().performCommand(command);
+        getOwner().chat(command);
     }
 }

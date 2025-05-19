@@ -1,4 +1,4 @@
-package hylexia.dev.studio.utils.libraries;
+package hylexia.dev.fastMenus.utils.libraries;
 
 import lombok.Getter;
 

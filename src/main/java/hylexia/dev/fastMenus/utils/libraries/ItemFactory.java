@@ -1,5 +1,8 @@
-package hylexia.dev.studio.utils.libraries;
+package hylexia.dev.fastMenus.utils.libraries;
 
+import hylexia.dev.fastMenus.utils.ParseUtils;
+import hylexia.dev.fastMenus.utils.Utils;
+import jdk.jshell.execution.Util;
 import lombok.Getter;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -16,8 +19,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
 
-import static hylexia.dev.studio.utils.Utils.colorize;
-
 
 @SuppressWarnings("ALL")
 @Getter
@@ -26,15 +27,16 @@ public class ItemFactory {
     private String displayName;
     private Player player;
     private List<String> lore = new ArrayList<>();
-    private final Map<Enchantment, Integer> enchantmentIntegerMap = new HashMap<>();
+    private final Map<Enchantment, Integer> enchantments = new HashMap<>();
     private Color leatherColor;
-    private int customModelData;
+    private Integer customModelData;
     private String headPlayerName;
     private String headUrl;
     private boolean hideAll;
     private boolean unbreakable;
     private int amount = 1;  // Default amount to 1
-    private final Map<EquipmentSlot, Map<String, AttributeModifier>> slotAttributes = new HashMap<>();
+    private final Map<EquipmentSlot, Map<String, AttributeModifier>> attributes = new HashMap<>();
+    private final Set<ItemFlag> flags = new HashSet<>();
 
     public ItemFactory(Material material) {
         this.material = material;
@@ -56,9 +58,7 @@ public class ItemFactory {
         this.displayName = itemMeta.getDisplayName();
 
         if (itemMeta.hasEnchants()) {
-            for (Enchantment enchantment : itemMeta.getEnchants().keySet()) {
-                this.enchantmentIntegerMap.put(enchantment, itemMeta.getEnchantLevel(enchantment));
-            }
+            this.enchantments.putAll(itemMeta.getEnchants());
         }
 
         if (itemMeta.hasLore()) {
@@ -77,22 +77,14 @@ public class ItemFactory {
             this.customModelData = itemMeta.getCustomModelData();
         }
 
-/*        // Copiar atributos
-        for (Attribute attribute : Attribute.values()) {
-            if (itemMeta.hasAttributeModifiers().) {
-                for (AttributeModifier modifier : itemMeta.getAttributeModifiers(attribute)) {
-                    this.slotAttributes.computeIfAbsent(modifier.getSlot(), k -> new HashMap<>()).put(attribute.name(), modifier);
-                }
-            }
-        }*/
+        itemMeta.getAttributeModifiers().forEach((attribute, modifier) -> {
+            this.attributes.computeIfAbsent(modifier.getSlot(), k -> new HashMap<>()).put(attribute.name(), modifier);
+        });
 
         this.amount = itemStack.getAmount();
-
-        if (itemMeta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES)) {
-            this.hideAll = true;
-        }
-
         this.unbreakable = itemMeta.isUnbreakable();
+        this.flags.addAll(itemMeta.getItemFlags());
+        this.hideAll = this.flags.contains(ItemFlag.HIDE_ATTRIBUTES);
     }
 
 
@@ -105,12 +97,11 @@ public class ItemFactory {
         if (enchantment == null || power < 1) {
             throw new IllegalArgumentException("Enchantment cannot be null and power must be greater than 0.");
         }
-        enchantmentIntegerMap.put(enchantment, power);
+        this.enchantments.put(enchantment, power);
         return this;
     }
 
     public ItemFactory setHeadPlayer(String name) {
-
         this.headPlayerName = name;
         return this;
     }
@@ -125,7 +116,7 @@ public class ItemFactory {
         return this;
     }
 
-    public ItemFactory setCustomModelData(int data) {
+    public ItemFactory setCustomModelData(Integer data) {
         this.customModelData = data;
         return this;
     }
@@ -141,18 +132,12 @@ public class ItemFactory {
     }
 
     public ItemFactory setLore(List<String> lore) {
-        if (lore == null) {
-            throw new IllegalArgumentException("Lore cannot be null.");
-        }
-        this.lore = new ArrayList<>(lore);
+        this.lore = lore == null ? new ArrayList<>() : new ArrayList<>(lore);
         return this;
     }
 
     public ItemFactory setLore(String... lore) {
-        if (lore == null || lore.length == 0) {
-            throw new IllegalArgumentException("Lore cannot be null or empty.");
-        }
-        this.lore = Arrays.asList(lore);
+        this.lore = lore == null ? new ArrayList<>() : Arrays.asList(lore);
         return this;
     }
 
@@ -160,22 +145,21 @@ public class ItemFactory {
         if (attribute == null || modifier == null || slot == null) {
             throw new IllegalArgumentException("Attribute, modifier, and slot cannot be null.");
         }
-        slotAttributes.computeIfAbsent(slot, k -> new HashMap<>()).put(attribute.name(), modifier);
+        this.attributes.computeIfAbsent(slot, k -> new HashMap<>()).put(attribute.name(), modifier);
         return this;
     }
 
     public ItemFactory addLore(String... addLore) {
-        if (addLore == null || addLore.length == 0) {
-            throw new IllegalArgumentException("Lore to add cannot be null or empty.");
+        if (addLore != null) {
+            this.lore.addAll(Arrays.asList(addLore));
         }
-        lore.addAll(Arrays.asList(addLore));
         return this;
     }
 
     public ItemFactory addLore(List<String> addLore) {
-        if (addLore.isEmpty()) addLore = new ArrayList<>();
-
-        lore.addAll(addLore);
+        if (addLore != null) {
+            this.lore.addAll(addLore);
+        }
         return this;
     }
 
@@ -197,67 +181,73 @@ public class ItemFactory {
         return this;
     }
 
-    public ItemStack build() {
-        ItemStack itemStack = new ItemStack(material);
+    public ItemFactory withFlags(Set<ItemFlag> flags) {
+        if (flags != null) {
+            this.flags.addAll(flags);
+        }
+        return this;
+    }
 
+    public ItemStack build() {
+
+        ItemStack base;
         if (headUrl != null && material == Material.PLAYER_HEAD) {
-            itemStack = SkullFactory.itemFromUrl(headUrl);
+            base= SkullFactory.itemFromUrl(headUrl);
         }
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        base= new ItemStack(material, amount);
+        ItemMeta itemMeta = base.getItemMeta();
+
         if (itemMeta == null) {
             throw new IllegalStateException("ItemMeta cannot be null.");
         }
 
-        itemMeta.setDisplayName(colorize(player, displayName));
+        String process = ParseUtils.processMSG(player, displayName);
+        List<String> processLore = ParseUtils.processMSG(player, lore);
 
-        if (customModelData > 0) {
+        itemMeta.setDisplayName(process);
+        itemMeta.setLore(processLore);
+        itemMeta.setUnbreakable(unbreakable);
+
+        if (customModelData != null) {
             itemMeta.setCustomModelData(customModelData);
         }
 
-        if (lore != null && !lore.isEmpty()) {
-            itemMeta.setLore(colorize(player, lore));
-        }
+        attributes.forEach((slot, attributeMap) -> {
+            attributeMap.forEach((attributeName, modifier) -> {
+                itemMeta.addAttributeModifier(Attribute.valueOf(attributeName), modifier);
+            });
+        });
 
-        for (Map.Entry<EquipmentSlot, Map<String, AttributeModifier>> slotEntry : slotAttributes.entrySet()) {
-            EquipmentSlot slot = slotEntry.getKey();
-            Map<String, AttributeModifier> attributes = slotEntry.getValue();
-            for (Map.Entry<String, AttributeModifier> entry : attributes.entrySet()) {
-                AttributeModifier attributeModifier = entry.getValue();
-                itemMeta.addAttributeModifier(Attribute.valueOf(entry.getKey()), attributeModifier);
-            }
-        }
-
-        for (Map.Entry<Enchantment, Integer> entry : enchantmentIntegerMap.entrySet()) {
-            itemMeta.addEnchant(entry.getKey(), entry.getValue(), true);
-        }
-
-        itemMeta.setUnbreakable(unbreakable);
+        enchantments.forEach((enchantment, level) -> {
+            itemMeta.addEnchant(enchantment, level, true);
+        });
 
         if (hideAll) {
             itemMeta.addItemFlags(ItemFlag.values());
+        } else {
+            itemMeta.addItemFlags(flags.toArray(new ItemFlag[0]));
         }
 
-        if (material == Material.LEATHER_HELMET || material == Material.LEATHER_CHESTPLATE ||
-                material == Material.LEATHER_LEGGINGS || material == Material.LEATHER_BOOTS) {
+        if (material.name().endsWith("_HEAD") && headPlayerName != null) {
+            SkullMeta skullMeta = (SkullMeta) itemMeta;
+            skullMeta.setOwner(headPlayerName);
+            base.setItemMeta(skullMeta);
+        } else if (material.name().startsWith("LEATHER_")) {
             LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) itemMeta;
             if (leatherColor != null) {
                 leatherArmorMeta.setColor(leatherColor);
             }
-            itemStack.setItemMeta(leatherArmorMeta);
-
-        } else if (material == Material.PLAYER_HEAD) {
-            SkullMeta skullMeta = (SkullMeta) itemMeta;
-            if (headPlayerName != null) {
-                skullMeta.setOwner(headPlayerName);
-            }
-            itemStack.setItemMeta(skullMeta);
-
+            base.setItemMeta(leatherArmorMeta);
         } else {
-            itemStack.setItemMeta(itemMeta);
+            base.setItemMeta(itemMeta);
         }
 
-        itemStack.setAmount(amount);
-        return itemStack;
+
+        return base;
+    }
+
+    public void setMaterial(Material nextMaterial) {
+        this.material = nextMaterial;
     }
 }

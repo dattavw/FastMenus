@@ -1,6 +1,6 @@
-package hylexia.dev.studio.utils.libraries;
+package hylexia.dev.fastMenus.utils.libraries;
 
-import hylexia.dev.studio.utils.Utils;
+import hylexia.dev.fastMenus.utils.ParseUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -8,6 +8,7 @@ public class LoggerFactory {
 
     public final Plugin plugin;
     public static String prefix = "[...] ";
+    public static boolean disabled = false;
 
     public LoggerFactory(Plugin plugin) {
         this.plugin = plugin;
@@ -42,10 +43,12 @@ public class LoggerFactory {
     }
 
     public static void redirect(LogType type, String message) {
+        if (disabled) return;
+
         var ref = new Object() {
-            String fixedMessage = type.color + prefix + message;
+            String fixedMessage = type.color + prefix + " " + type.color + message;
         };
-        ref.fixedMessage = Utils.colorize(ref.fixedMessage);
+        ref.fixedMessage = ParseUtils.colorize(ref.fixedMessage);
 
         Bukkit.getConsoleSender().sendMessage(ref.fixedMessage);
         Bukkit.getOnlinePlayers().stream().filter(player -> player.isOp() && player.getGameMode().isInvulnerable()).forEach(player -> player.sendMessage(ref.fixedMessage));
@@ -53,7 +56,7 @@ public class LoggerFactory {
 
 
     public enum LogType {
-        INFO("&7"),
+        INFO("&e"),
         WARNING("&6"),
         SUCCESS("&a"),
         ERROR("&c");

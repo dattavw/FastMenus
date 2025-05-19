@@ -3,3 +3,8 @@ version: '1.0.0'
 main: hylexia.dev.fastMenus.FastMenus
 api-version: '1.21'
 authors: [ datta ]
+softdepend: [ PlaceholderAPI ]
+depend: [ PlaceholderAPI ]
+commands:
+  fastmenus:
+    description: Comando principal de FastMenus

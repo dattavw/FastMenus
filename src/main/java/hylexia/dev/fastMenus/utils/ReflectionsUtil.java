@@ -1,4 +1,4 @@
-package hylexia.dev.studio.utils;
+package hylexia.dev.fastMenus.utils;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
