@@ -1,0 +1,40 @@
+config:
+  title: Menú de %player%
+  size: 9*5
+  filled: true
+
+items:
+  3,3:
+    item: PLAYER_HEAD
+    name: "&aHola %player%!"
+    flags:
+      headPlayer: "datta"
+    lore:
+      - "&7Este es un ejemplo de menú"
+      - "&7Puedes crear tus propios menús"
+      - ""
+      - "&fHay &a%online% conectados&f"
+      - ""
+    action:
+      any: # Esto solo funcionara cuando left y right no esten.
+        - "player_msg: @p;¡Esto se ejecutara con cualquiera de los dos click!"
+      left:
+        - "player_msg: @p;¡Click izquierdo!"
+      right:
+        - "player_msg: @p;¡Click derecho!"
+  4,3:
+    item:
+      - EMERALD
+      - DIAMOND
+    name: "&aItem Cambiante"
+    flags: []
+    lore:
+      - "&7Este item estara cambiando entre diamante y esmeralda"
+    action: []
+  5,3;6,3;7,3: 
+    item: BARRIER
+    name: "&aItem desplazado"
+    flags: []
+    lore:
+      - "&7Este item estara desde el slot x4,y3 hasta el x4,y5"
+    action: []
