@@ -1,6 +1,9 @@
 ## FancyMenus
 Es un plugin de código abierto hecho para crear menús de manera optimizada.
 
+## Ejemplos
+[Menú basico de ejemplo](https://github.com/dattavw/FastMenus/blob/master/examples/example.yml)
+
 ## Selectores de Objetivo
 | Selector         | Descripción                                                                 |
 |------------------|-----------------------------------------------------------------------------|
@@ -21,5 +24,3 @@ Es un plugin de código abierto hecho para crear menús de manera optimizada.
 | `player_sound` | `player_sound: [<objetivo>;]<sonido>;[volumen];[tono]`                 | Reproduce un sonido para uno o varios jugadores (o al sender si no se especifica).    |
 | `player_title` | `player_title: [<objetivo>;]<título>;<subtítulo>;[fadeIn];[stay];[fadeOut]` | Muestra un título y subtítulo en la pantalla de uno o varios jugadores (o al sender si no se especifica). |
 
-
-## Ejemplos
