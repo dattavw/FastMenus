@@ -1,0 +1,34 @@
+config:
+  title: "Menú con PlaceholderAPI"
+  size: 9*1
+  filled: true
+items:
+  1,1:
+    item: HEART_OF_THE_SEA
+    name: "&bVida"
+    lore:
+      - "&7Vida actual: &a%player_health%&7/&c%player_max_health%"
+    action: []
+  2,1:
+    item: EXPERIENCE_BOTTLE
+    name: "&aExperiencia"
+    lore:
+      - "&7Nivel: &6%player_level%"
+      - "&7Puntos de experiencia: &e%player_exp%"
+      - "&7Progreso al siguiente nivel: &b%player_exp_to_level%"
+    action: []
+  3,1:
+    item: BREAD
+    name: "&cHambre"
+    lore:
+      - "&7Nivel de hambre: &4%player_food_level%"
+      - "&7Saturación: &2%player_saturation%"
+    action: []
+  4,1:
+    item: NETHER_STAR
+    name: "&dInformación General"
+    lore:
+      - "&7Nombre: &f%player%"
+      - "&7UUID: &7%player_uuid%"
+      - "&7Dirección IP: &7%player_ip%"
+    action: []
