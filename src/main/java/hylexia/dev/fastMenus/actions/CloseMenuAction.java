@@ -2,16 +2,14 @@ package hylexia.dev.fastMenus.actions;
 
 import hylexia.dev.fastMenus.objects.Action;
 
-public class PlayerChatAction extends Action {
+public class CloseMenuAction extends Action {
     @Override
     public String getFormat() {
-        return "player_chat";
+        return "close";
     }
 
     @Override
     public void execute(String[] args) {
-        String command = join(args);
-
-        getOwner().chat(command);
+        getOwner().closeInventory();
     }
 }

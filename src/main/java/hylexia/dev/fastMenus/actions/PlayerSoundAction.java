@@ -1,12 +1,12 @@
 package hylexia.dev.fastMenus.actions;
 
-import hylexia.dev.fastMenus.objects.FastMenuAction;
+import hylexia.dev.fastMenus.objects.Action;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class PlayerSoundAction extends FastMenuAction {
+public class PlayerSoundAction extends Action {
 
     @Override
     public String getFormat() {

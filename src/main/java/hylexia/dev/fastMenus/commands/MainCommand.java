@@ -63,12 +63,10 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 1) {
-            // Autocompletar el nombre del subcomando
             return subCommands.keySet().stream()
                     .filter(name -> name.startsWith(args[0].toLowerCase()))
                     .toList();
         } else if (args.length >= 2) {
-            // Autocompletar los argumentos del subcomando correspondiente
             String subCommandName = args[0].toLowerCase();
             if (subCommands.containsKey(subCommandName)) {
                 FastCommand subCommand = subCommands.get(subCommandName);

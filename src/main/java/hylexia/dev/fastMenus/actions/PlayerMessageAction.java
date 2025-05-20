@@ -1,12 +1,12 @@
 package hylexia.dev.fastMenus.actions;
 
-import hylexia.dev.fastMenus.objects.FastMenuAction;
+import hylexia.dev.fastMenus.objects.Action;
 import hylexia.dev.fastMenus.utils.Utils;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class PlayerMessageAction extends FastMenuAction {
+public class PlayerMessageAction extends Action {
     @Override
     public String getFormat() {
         return "player_msg";

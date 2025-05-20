@@ -2,7 +2,7 @@ package hylexia.dev.fastMenus.utils;
 
 import hylexia.dev.fastMenus.FastMenus;
 import hylexia.dev.fastMenus.objects.FastMenu;
-import hylexia.dev.fastMenus.objects.FastMenuAction;
+import hylexia.dev.fastMenus.objects.Action;
 import hylexia.dev.fastMenus.objects.FastMenuItem;
 import hylexia.dev.fastMenus.utils.configuration.Configuration;
 import hylexia.dev.fastMenus.utils.libraries.ItemFactory;
@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -172,7 +173,9 @@ public class MenuParser {
         menuItem.setCustomModelData(customModelData);
         menuItem.setItemFlags(itemFlags);
         menuItem.setHeadUrl(headUrl);
-        menuItem.setHeadPlayerName(headPlayer);
+        if (headPlayer != null) {
+            menuItem.setHeadPlayerName(headPlayer.replace("%player%", player.getName()));
+        }
         menuItem.setHideFlags(hideFlags);
         menuItem.setDisplayName(parsedName);
         menuItem.setLore(parsedLore);
@@ -210,7 +213,7 @@ public class MenuParser {
     private static void executeActions(Player player, List<String> actions) {
         if (actions != null) {
             for (String actionString : actions) {
-                FastMenuAction action = FastMenus.getInstance().getFastMenuManager().getAction(actionString);
+                Action action = FastMenus.getInstance().getFastMenuManager().getAction(actionString);
                 if (action != null) {
                     String[] args = actionString.split(":", 2);
                     String[] actionArgs = (args.length > 1) ? args[1].trim().split(" ") : new String[0];

@@ -1,13 +1,9 @@
 package hylexia.dev.fastMenus.actions;
 
-import hylexia.dev.fastMenus.objects.FastMenuAction;
-import hylexia.dev.fastMenus.objects.FastMenuItem;
-import hylexia.dev.fastMenus.utils.Utils;
+import hylexia.dev.fastMenus.objects.Action;
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.io.BukkitObjectInputStream;
 
-public class ConsoleAction extends FastMenuAction {
+public class ConsoleAction extends Action {
 
     @Override
     public String getFormat() {

@@ -2,7 +2,7 @@ package hylexia.dev.fastMenus.managers;
 
 import hylexia.dev.fastMenus.FastMenus;
 import hylexia.dev.fastMenus.objects.FastMenu;
-import hylexia.dev.fastMenus.objects.FastMenuAction;
+import hylexia.dev.fastMenus.objects.Action;
 import hylexia.dev.fastMenus.utils.MenuParser;
 import hylexia.dev.fastMenus.utils.ReflectionsUtil;
 import hylexia.dev.fastMenus.utils.Utils;
@@ -20,7 +20,7 @@ public class FastMenuManager {
 
     private final FastMenus fastMenus;
     private final List<FastMenu> menus = new ArrayList<>();
-    private List<FastMenuAction> actions = new ArrayList<>();
+    private List<Action> actions = new ArrayList<>();
     private final File menusDirectory;
     private final ConfigurationManager configurationManager;
 
@@ -28,7 +28,7 @@ public class FastMenuManager {
         this.fastMenus = fastMenus;
         this.menusDirectory = new File(fastMenus.getDataFolder(), "menus");
         this.configurationManager = fastMenus.getConfigurationManager();
-        this.actions = new ArrayList<>(ReflectionsUtil.getInstancesFromPackage(FastMenuAction.class, "hylexia.dev.fastMenus.actions"));
+        this.actions = new ArrayList<>(ReflectionsUtil.getInstancesFromPackage(Action.class, "hylexia.dev.fastMenus.actions"));
 
         actions.forEach(action -> {
             LoggerFactory.warn("ℹ️ Acción cargada: " + action.getClass().getSimpleName());
@@ -46,7 +46,7 @@ public class FastMenuManager {
         loadMenus();
     }
 
-    public FastMenuAction getAction(String input) {
+    public Action getAction(String input) {
         if (input == null || input.isEmpty()) {
             return null;
         }
@@ -61,10 +61,10 @@ public class FastMenuManager {
         String arguments = parts[1].trim();
         String[] actionArgs = arguments.split(" ");
 
-        for (FastMenuAction action : actions) {
+        for (Action action : actions) {
             if (action.getFormat().trim().toLowerCase().equals(actionName)) {
                 try {
-                    FastMenuAction newActionInstance = action.getClass().getDeclaredConstructor().newInstance();
+                    Action newActionInstance = action.getClass().getDeclaredConstructor().newInstance();
                     newActionInstance.setArguments(actionArgs);
                     return newActionInstance;
                 } catch (Exception e) {
@@ -177,5 +177,9 @@ public class FastMenuManager {
             }
         }
         LoggerFactory.info("☑ Recarga de menús completada. Se cargaron " + menus.size() + " menús.");
+    }
+
+    public boolean existMenu(String menuIdentifier) {
+        return getMenu(menuIdentifier) != null;
     }
 }

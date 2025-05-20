@@ -87,6 +87,7 @@ public class SkullFactory {
             Skull state = (Skull) block.getState();
 
             PlayerProfile profile = convertToPaperProfile(Bukkit.createPlayerProfile(UUID.randomUUID()));
+            if (profile == null) return;
             profile.getTextures().setSkin(new URL(fullUrl));
             state.setPlayerProfile(profile);
             state.update(false, false);

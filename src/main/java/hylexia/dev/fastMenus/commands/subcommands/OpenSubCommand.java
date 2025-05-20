@@ -28,10 +28,18 @@ public class OpenSubCommand extends FastCommand {
             return dontPermission(commandSender);
         }
 
-        if (args.length == 0) {
-            Utils.sendMSG(commandSender, "[p] &CDebes especificar el identificador del menú.");
-            return true;
+        if (commandSender instanceof Player) {
+            if (args.length == 0) {
+                Utils.sendMSG(commandSender, "[p] &cDebes especificar el identificador del menú.");
+                return true;
+            }
+        } else {
+            if (args.length == 0) {
+                Utils.sendMSG(commandSender, "[p] &cLa consola debe especificar un identificador de menú.");
+                return true;
+            }
         }
+
 
         String menuIdentifier = args[0];
         FastMenu menu = fastMenuManager.getMenu(menuIdentifier);
@@ -39,23 +47,40 @@ public class OpenSubCommand extends FastCommand {
             Utils.sendMSG(commandSender, "[p] &cNo existe el menú con el identificador '" + menuIdentifier + "'");
             return true;
         }
-        Player a = (Player) commandSender;
 
-        if (args.length > 1) {
-            Player b = Bukkit.getPlayer(args[1]);
-            if (b != null) {
-                a = b;
-                Utils.sendMSG(commandSender, "[p] &aAbriendo el menú " + menuIdentifier + " para el jugador '" + a.getName() + "'");
+        Player target = null;
 
+        if (commandSender instanceof Player) {
+            if (args.length > 1) {
+                Player b = Bukkit.getPlayer(args[1]);
+                if (b != null) {
+                    target = b;
+                    Utils.sendMSG(commandSender, "[p] &aAbriendo el menú " + menuIdentifier + " para el jugador '" + target.getName() + "'");
+                } else {
+                    Utils.sendMSG(commandSender, "[p] &cNo existe el jugador '" + args[1] + "'");
+                    return true;
+                }
             } else {
-                Utils.sendMSG(commandSender, "[p] &cNo existe el jugador '" + args[1] + "'");
-
+                target = (Player) commandSender;
+            }
+        } else {
+            if (args.length > 1) {
+                Player b = Bukkit.getPlayer(args[1]);
+                if (b != null) {
+                    target = b;
+                    Utils.sendMSG(commandSender, "[p] &aAbriendo el menú " + menuIdentifier + " para el jugador '" + target.getName() + "'");
+                } else {
+                    Utils.sendMSG(commandSender, "[p] &cNo existe el jugador '" + args[1] + "'");
+                    return true;
+                }
+            } else {
+                Utils.sendMSG(commandSender, "[p] &cLa consola debe especificar un jugador para abrir el menú.");
                 return true;
             }
         }
 
-        fastMenuManager.open(a, menu, args);
-        return false;
+        fastMenuManager.open(target, menu, args);
+        return true;
     }
 
     @Override

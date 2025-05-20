@@ -1,8 +1,8 @@
 package hylexia.dev.fastMenus.actions;
 
-import hylexia.dev.fastMenus.objects.FastMenuAction;
+import hylexia.dev.fastMenus.objects.Action;
 
-public class PlayerCommandAction extends FastMenuAction {
+public class PlayerCommandAction extends Action {
     @Override
     public String getFormat() {
         return "player_cmd";

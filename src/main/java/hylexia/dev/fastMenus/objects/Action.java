@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public abstract class FastMenuAction {
+public abstract class Action {
 
     private String[] actionArgs;
     private Player owner;
