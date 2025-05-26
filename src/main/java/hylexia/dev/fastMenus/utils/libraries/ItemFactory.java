@@ -30,8 +30,11 @@ public class ItemFactory {
     private final Map<Enchantment, Integer> enchantments = new HashMap<>();
     private Color leatherColor;
     private Integer customModelData;
+
     private String headPlayerName;
     private String headUrl;
+    private String headBase64;
+
     private boolean hideAll;
     private boolean unbreakable;
     private int amount = 1;  // Default amount to 1
@@ -108,6 +111,11 @@ public class ItemFactory {
 
     public ItemFactory setHeadUrl(String url) {
         this.headUrl = url;
+        return this;
+    }
+
+    public ItemFactory setHeadBase64(String base64) {
+        this.headBase64 = base64;
         return this;
     }
 
@@ -190,12 +198,22 @@ public class ItemFactory {
 
     public ItemStack build() {
 
-        ItemStack base;
-        if (headUrl != null && material == Material.PLAYER_HEAD) {
-            base= SkullFactory.itemFromUrl(headUrl);
+        ItemStack base = null;
+
+        if (material == Material.PLAYER_HEAD) {
+            if (headUrl != null) {
+                base = SkullFactory.itemFromUrl(headUrl);
+            }
+            if (headBase64 != null) {
+                base = SkullFactory.itemFromBase64(headBase64);
+            }
+            if (headPlayerName != null) {
+                base = SkullFactory.itemFromName(headPlayerName);
+            }
+        } else {
+            base = new ItemStack(material, amount);
         }
 
-        base= new ItemStack(material, amount);
         ItemMeta itemMeta = base.getItemMeta();
 
         if (itemMeta == null) {
@@ -229,11 +247,7 @@ public class ItemFactory {
             itemMeta.addItemFlags(flags.toArray(new ItemFlag[0]));
         }
 
-        if (material.name().endsWith("_HEAD") && headPlayerName != null) {
-            SkullMeta skullMeta = (SkullMeta) itemMeta;
-            skullMeta.setOwner(headPlayerName);
-            base.setItemMeta(skullMeta);
-        } else if (material.name().startsWith("LEATHER_")) {
+        if (material.name().startsWith("LEATHER_")) {
             LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) itemMeta;
             if (leatherColor != null) {
                 leatherArmorMeta.setColor(leatherColor);
@@ -242,7 +256,6 @@ public class ItemFactory {
         } else {
             base.setItemMeta(itemMeta);
         }
-
 
         return base;
     }

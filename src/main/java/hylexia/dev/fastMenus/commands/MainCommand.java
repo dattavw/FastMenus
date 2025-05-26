@@ -3,6 +3,7 @@ package hylexia.dev.fastMenus.commands;
 import hylexia.dev.fastMenus.commands.subcommands.ListSubCommand;
 import hylexia.dev.fastMenus.commands.subcommands.OpenSubCommand;
 import hylexia.dev.fastMenus.commands.subcommands.ReloadSubCommand;
+import hylexia.dev.fastMenus.commands.subcommands.TestSubCommand;
 import hylexia.dev.fastMenus.objects.FastCommand;
 import hylexia.dev.fastMenus.utils.Utils;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         registerSubCommand("open", new OpenSubCommand(this));
         registerSubCommand("reload", new ReloadSubCommand(this));
         registerSubCommand("list", new ListSubCommand(this));
+        registerSubCommand("test", new TestSubCommand(this));
     }
 
     public void registerSubCommand(String name, FastCommand subCommand) {

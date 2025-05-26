@@ -65,7 +65,7 @@ processResources {
     }
 }
 
-def path = "C:/Users/Administrator/Desktop/Network/Dev/plugins"
+def path = "C:/Users/Administrator/Documents/plugins"
 def pluginName = "FastMenus"
 
 jar {
